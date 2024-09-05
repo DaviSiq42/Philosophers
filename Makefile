@@ -11,7 +11,7 @@
 # **************************************************************************** #
 
 NAME = philo
-SRC = philo.c utils.c
+SRC = philo.c utils.c set_stuff.c routine.c
 OBJ = ${SRC:.c=.o}
 
 CC = cc
@@ -33,4 +33,4 @@ re:	fclean all
 
 .PHONY: all clean fclean re
 
-.SILENT:
+//.SILENT:

@@ -15,10 +15,13 @@
 
 # include <stdio.h>
 # include <pthread.h>
+# include <sys/time.h>
+# include <unistd.h>
 
 # define SLEEP 1
 # define THINK 2
 # define EAT 3
+# define FORK 4
 
 typedef struct s_philo
 {
@@ -30,7 +33,7 @@ typedef struct s_philo
 
 typedef struct s_data
 {
-	t_philo	*philos[200];
+	t_philo	*philos;
 	int		num_philo;
 	int		time_die;
 	int		time_eat;
@@ -41,7 +44,17 @@ typedef struct s_data
 //	main
 t_data	set_struct(char **input);
 
+//	set_stuff
+void	set_philos(t_data *data);
+void	*routine(void *data);
+
+//routine
+void	sleep_n_think(int action, t_data data);
+int	set_time(void);
+void	eat(t_data *data);
+
 //	utils
 int	ft_atoi(char *str);
+void	messages(t_data data, char *text);
 
 #endif

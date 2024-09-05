@@ -19,21 +19,29 @@ void	set_philos(t_data *data)
 	i = 0;
 	while (i < data->num_philo)
 	{
-		pthread_create(data->philos[i]->thread, NULL, routine, data);
-		data->philos[i]->philo_id = i;
+//		pthread_mutex_init(data->philos[i].fork_l, NULL);
+//		pthread_mutex_init(data->philos[i].fork_r, NULL);
+//		pthread_create(&data->philos->thread, NULL, routine, (void *)data);
+		data->philos->philo_id = i;
 		i++;
 	}
 	i = 0;
 	while (i < data->num_philo)
 	{
-		pthread_join(data->thread[i], NULL);
+//		pthread_join(data->philos->thread, NULL);
+//		pthread_mutex_destroy(data->philos[i].fork_l);
+//		pthread_mutex_destroy(data->philos[i].fork_r);
 		i++;
 	}
 }
 
-void	routine(void *(t_data *)data)
+void	*routine(void *data)
 {
-	sleep_n_think(1, data, data->philos->philo_id);
-	sleep_n_think(2, data, data->philos->philo_id);
-	eat(data);
+	t_data	*backup;
+
+	backup = (t_data *)data;
+	eat(backup);
+	sleep_n_think(SLEEP, *backup);
+	sleep_n_think(THINK, *backup);
+	return (NULL);
 }

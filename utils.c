@@ -24,3 +24,11 @@ int	ft_atoi(char *str)
 	}
 	return (r);
 }
+
+void	messages(t_data data, char *text)
+{
+	int	time;
+
+	time = set_time() * 1000;
+	printf("%d %d %s", time, data.philos->philo_id, text);
+}

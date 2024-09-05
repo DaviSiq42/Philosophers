@@ -22,6 +22,8 @@ int	main(int argc, char **argv)
 		return (0);
 	}
 	data = set_struct(argv);
+	printf("%d", data.num_philo);
+	set_philos(&data);
 	return (0);
 }
 
