@@ -15,7 +15,7 @@ SRC = philo.c utils.c set_stuff.c routine.c
 OBJ = ${SRC:.c=.o}
 
 CC = cc
-CFLAGS = -Wall -Werror -Wextra
+CFLAGS = -Wall -Werror -Wextra -g
 RM = rm -f
 
 all:	${NAME}

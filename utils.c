@@ -25,10 +25,12 @@ int	ft_atoi(char *str)
 	return (r);
 }
 
-void	messages(t_data data, char *text)
+void	messages(t_philo *data, char *text)
 {
-	int	time;
+	long	time;
 
-	time = set_time() * 1000;
-	printf("%d %d %s", time, data.philos->philo_id, text);
+	pthread_mutex_init(&data->time, NULL);
+	time = set_time(data);
+	printf("%ld %d %s", time, data->philo_id, text);
+	pthread_mutex_destroy(&data->time);
 }

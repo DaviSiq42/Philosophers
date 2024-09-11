@@ -12,44 +12,50 @@
 
 #include "philo.h"
 
-void	sleep_n_think(int action, t_data data)
+void	sleep_n_think(int action, t_philo data)
 {
 	if (action == SLEEP)
 	{
-		messages(data, "is sleeping");
+		messages(&data, "is sleeping\n");
 		usleep(data.time_sleep);
 	}
 	if (action == THINK)
 	{
-		messages(data, "is thinking");
+		messages(&data, "is thinking\n");
 		usleep(100);//need to check time philos can stay thinking without dying
 	}
 }
 
-int	set_time(void)
+long	set_time(t_philo *data)
 {
-	static long	time;
+	static long	prev_time = 0;
+	long	timestamp;
+	long	current_time;
 	struct timeval	tv;
 
+	pthread_mutex_lock(&data->time);
 	gettimeofday(&tv, NULL);
-	time = tv.tv_sec - time;
-	if (time == tv.tv_sec)
+	current_time = (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
+	timestamp = current_time - prev_time;
+	if (prev_time == 0)
+	{
+		prev_time = current_time;
+		pthread_mutex_unlock(&data->time);
 		return (0);
-	return (time);
+	}
+	prev_time = current_time;
+	pthread_mutex_unlock(&data->time);
+	return (timestamp);
 }
 
-void	eat(t_data *data)
+void	eat(t_philo *data)
 {
-	pthread_mutex_init(data->philos->fork_r, NULL);
-	pthread_mutex_init(data->philos->fork_l, NULL);
-	pthread_mutex_lock(data->philos->fork_r);
-	messages(*data, "has taken a fork");
-	pthread_mutex_lock(data->philos->fork_l);
-	messages(*data, "has taken a fork");
-	messages(*data, "is eating");
+	pthread_mutex_lock(data->fork_r);
+	messages(data, "has taken a fork");
+	pthread_mutex_lock(data->fork_l);
+	messages(data, "has taken a fork");
+	messages(data, "is eating");
 	usleep(data->time_eat);
-	pthread_mutex_unlock(data->philos->fork_r);
-	pthread_mutex_unlock(data->philos->fork_l);
-	pthread_mutex_destroy(data->philos->fork_r);
-	pthread_mutex_destroy(data->philos->fork_l);
+	pthread_mutex_unlock(data->fork_r);
+	pthread_mutex_unlock(data->fork_l);
 }

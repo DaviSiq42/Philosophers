@@ -17,6 +17,7 @@
 # include <pthread.h>
 # include <sys/time.h>
 # include <unistd.h>
+# include <stdlib.h>
 
 # define SLEEP 1
 # define THINK 2
@@ -29,6 +30,9 @@ typedef struct s_philo
 	int		philo_id;
 	pthread_mutex_t	*fork_r;
 	pthread_mutex_t	*fork_l;
+	pthread_mutex_t time;
+	int		time_sleep;
+	int		time_eat;
 }		t_philo;
 
 typedef struct s_data
@@ -36,8 +40,6 @@ typedef struct s_data
 	t_philo	*philos;
 	int		num_philo;
 	int		time_die;
-	int		time_eat;
-	int		time_sleep;
 	int		num_meals;
 }		t_data;
 
@@ -49,12 +51,12 @@ void	set_philos(t_data *data);
 void	*routine(void *data);
 
 //routine
-void	sleep_n_think(int action, t_data data);
-int	set_time(void);
-void	eat(t_data *data);
+void	sleep_n_think(int action, t_philo data);
+long	set_time(t_philo *data);
+void	eat(t_philo *data);
 
 //	utils
 int	ft_atoi(char *str);
-void	messages(t_data data, char *text);
+void	messages(t_philo *data, char *text);
 
 #endif

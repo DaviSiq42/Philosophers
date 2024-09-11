@@ -22,7 +22,6 @@ int	main(int argc, char **argv)
 		return (0);
 	}
 	data = set_struct(argv);
-	printf("%d", data.num_philo);
 	set_philos(&data);
 	return (0);
 }
@@ -30,11 +29,17 @@ int	main(int argc, char **argv)
 t_data	set_struct(char **input)
 {
 	t_data	info;
+	int	i;
 
+	info.philos = (t_philo *)malloc(info.num_philo * sizeof(t_philo));
 	info.num_philo = ft_atoi(input[1]);
 	info.time_die = ft_atoi(input[2]);
-	info.time_eat = ft_atoi(input[3]);
-	info.time_sleep = ft_atoi(input[4]);
+	i = -1;
+	while (++i < info.num_philo)
+	{
+		info.philos[i].time_eat = ft_atoi(input[3]);
+		info.philos[i].time_sleep = ft_atoi(input[4]);
+	}
 	if (input[5])
 		info.num_meals = ft_atoi(input[5]);
 	return (info);
