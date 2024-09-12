@@ -11,7 +11,7 @@
 # **************************************************************************** #
 
 NAME = philo
-SRC = philo.c utils.c set_stuff.c routine.c
+SRC = philo.c utils.c set_stuff.c routine.c destroyer.c
 OBJ = ${SRC:.c=.o}
 
 CC = cc

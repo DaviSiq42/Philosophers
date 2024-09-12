@@ -12,7 +12,7 @@
 
 #include "philo.h"
 
-void	sleep_n_think(int action, t_philo data)
+void	sleep_n_think(int action, t_data data)
 {
 	if (action == SLEEP)
 	{
@@ -26,36 +26,16 @@ void	sleep_n_think(int action, t_philo data)
 	}
 }
 
-long	set_time(t_philo *data)
+void	eat(t_data *data)
 {
-	static long	prev_time = 0;
-	long	timestamp;
-	long	current_time;
-	struct timeval	tv;
-
-	pthread_mutex_lock(&data->time);
-	gettimeofday(&tv, NULL);
-	current_time = (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
-	timestamp = current_time - prev_time;
-	if (prev_time == 0)
-	{
-		prev_time = current_time;
-		pthread_mutex_unlock(&data->time);
-		return (0);
-	}
-	prev_time = current_time;
-	pthread_mutex_unlock(&data->time);
-	return (timestamp);
-}
-
-void	eat(t_philo *data)
-{
-	pthread_mutex_lock(data->fork_r);
-	messages(data, "has taken a fork");
-	pthread_mutex_lock(data->fork_l);
-	messages(data, "has taken a fork");
-	messages(data, "is eating");
+	pthread_mutex_lock(&data->eat);
+	pthread_mutex_lock(&data->philos[data->id].fork_r);
+	messages(data, "has taken a fork\n");
+	pthread_mutex_lock(&data->philos[data->id].fork_l);
+	messages(data, "has taken a fork\n");
+	messages(data, "is eating\n");
 	usleep(data->time_eat);
-	pthread_mutex_unlock(data->fork_r);
-	pthread_mutex_unlock(data->fork_l);
+	pthread_mutex_unlock(&data->philos[data->id].fork_l);
+	pthread_mutex_unlock(&data->philos[data->id].fork_r);
+	pthread_mutex_unlock(&data->eat);
 }
