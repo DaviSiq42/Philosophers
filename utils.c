@@ -25,14 +25,14 @@ int	ft_atoi(char *str)
 	return (r);
 }
 
-void	messages(t_data *data, char *text)
+void	messages(t_philo *philo, char *text)
 {
 	long long	time;
 
-	pthread_mutex_lock(&data->time);
-	time = set_time() - data->start_time;
-	printf("%lld %d %s", time, data->philos->philo_id, text);
-	pthread_mutex_unlock(&data->time);
+	pthread_mutex_lock(&philo->data->time);
+	time = set_time() - philo->data->start_time;
+	printf("%lld %d %s", time, philo->philo_id, text);
+	pthread_mutex_unlock(&philo->data->time);
 }
 
 long long	set_time(void)

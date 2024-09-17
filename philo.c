@@ -22,9 +22,8 @@ int	main(int argc, char **argv)
 		return (0);
 	}
 	data = set_struct(argv);
-	set_forks(&data);
-	set_philos(&data);
-	mutex_destroyer(&data);
+	set_program(&data);
+	close_program(&data);
 	return (0);
 }
 
@@ -34,6 +33,11 @@ t_data	set_struct(char **input)
 
 	info.num_philo = ft_atoi(input[1]);
 	info.philos = (t_philo *)malloc(info.num_philo * sizeof(t_philo));
+	info.philos->fork_l = malloc((info.num_philo / 2) * sizeof(pthread_mutex_t));
+	if (info.num_philo % 2 == 0)
+		info.philos->fork_r = malloc((info.num_philo / 2) * sizeof(pthread_mutex_t));
+	else
+		info.philos->fork_r = malloc((info.num_philo / 2 + 1) * sizeof(pthread_mutex_t));
 	info.time_die = ft_atoi(input[2]);
 	info.time_eat = ft_atoi(input[3]);
 	info.time_sleep = ft_atoi(input[4]);

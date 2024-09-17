@@ -12,7 +12,7 @@
 
 #include "philo.h"
 
-void	set_philos(t_data *data)
+static void	set_philos(t_data *data)
 {
 	int	i;
 
@@ -20,34 +20,54 @@ void	set_philos(t_data *data)
 	while (++i < data->num_philo)
 	{
 		data->philos[i].philo_id = i + 1;
-		pthread_create(&data->philos[i].thread, NULL, routine, (void *)data);
+		data->philos[i].fork_r = &data->fork_gen[i];
+		if (i + 1 == data->num_philo)
+			data->philos[i].fork_l = &data->fork_gen[data->num_philo];
+		else
+			data->philos[i].fork_l = &data->fork_gen[i + 1];
+		data->philos[i].data = data;
 	}
+	i = -1;
+	while (++i < data->num_philo)
+		pthread_create(&data->philos[i].thread, NULL, routine, (void *)&data->philos[i]);
 	i = -1;
 	while (++i < data->num_philo)
 		pthread_join(data->philos[i].thread, NULL);
 }
 
-void	set_forks(t_data *data)
+static void	set_mutex(t_data *data)
 {
 	int	i;
 
 	i = -1;
+	data->fork_gen = malloc(data->num_philo * sizeof(pthread_mutex_t));
+	if (!data->fork_gen)
+	{
+		close_program(data);
+		exit(EXIT_FAILURE);
+	}
 	while (++i < data->num_philo)
 	{
-		pthread_mutex_init(&data->philos[i].fork_l, NULL);
-		pthread_mutex_init(&data->philos[i].fork_r, NULL);
+		if (pthread_mutex_init(&data->fork_gen[i], NULL) != 0)
+		{
+			close_program(data);
+			exit(EXIT_FAILURE);
+		}
+		if (pthread_mutex_init(&data->time, NULL) != 0)
+		{
+			close_program(data);
+			exit(EXIT_FAILURE);
+		}
+		if (pthread_mutex_init(&data->eat, NULL) != 0)
+		{
+			close_program(data);
+			exit(EXIT_FAILURE);
+		}
 	}
-	pthread_mutex_init(&data->time, NULL);
-	pthread_mutex_init(&data->eat, NULL);
 }
 
-void	*routine(void *data)
+void	set_program(t_data *data)
 {
-	t_data	*backup;
-
-	backup = (t_data *)data;
-	eat(backup);
-	sleep_n_think(SLEEP, *backup);
-	sleep_n_think(THINK, *backup);
-	return (NULL);
+	set_mutex(data);
+	set_philos(data);
 }

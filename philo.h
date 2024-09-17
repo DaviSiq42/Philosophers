@@ -27,14 +27,16 @@
 typedef struct s_philo
 {
 	pthread_t	thread;
-	pthread_mutex_t	fork_r;
-	pthread_mutex_t	fork_l;
+	pthread_mutex_t	*fork_r;
+	pthread_mutex_t	*fork_l;
 	int		philo_id;
+	struct s_data *data;
 }		t_philo;
 
 typedef struct s_data
 {
 	t_philo	*philos;
+	pthread_mutex_t	*fork_gen;
 	pthread_mutex_t	time;
 	pthread_mutex_t	eat;
 	long long	start_time;
@@ -50,20 +52,17 @@ typedef struct s_data
 t_data	set_struct(char **input);
 
 //	set_stuff
-void	set_philos(t_data *data);
-void	*routine(void *data);
-void	set_forks(t_data *data);
+void	set_program(t_data *data);
 
 //	routine
-void	sleep_n_think(int action, t_data data);
-void	eat(t_data *data);
+void	*routine(void *data);
 
 //	utils
 int	ft_atoi(char *str);
-void	messages(t_data *data, char *text);
+void	messages(t_philo *philo, char *text);
 long long	set_time(void);
 
 //	destroyer
-void	mutex_destroyer(t_data *data);
+void	close_program(t_data *data);
 
 #endif

@@ -12,30 +12,41 @@
 
 #include "philo.h"
 
-void	sleep_n_think(int action, t_data data)
+static void	sleep_n_think(int action, t_philo *philo)
 {
 	if (action == SLEEP)
 	{
-		messages(&data, "is sleeping\n");
-		usleep(data.time_sleep);
+		messages(philo, "is sleeping\n");
+		usleep(philo->data->time_sleep);
 	}
 	if (action == THINK)
 	{
-		messages(&data, "is thinking\n");
+		messages(philo, "is thinking\n");
 		usleep(100);//need to check time philos can stay thinking without dying
 	}
 }
 
-void	eat(t_data *data)
+static void	eat(t_philo *philo)
 {
-	pthread_mutex_lock(&data->eat);
-	pthread_mutex_lock(&data->philos[data->id].fork_r);
-	messages(data, "has taken a fork\n");
-	pthread_mutex_lock(&data->philos[data->id].fork_l);
-	messages(data, "has taken a fork\n");
-	messages(data, "is eating\n");
-	usleep(data->time_eat);
-	pthread_mutex_unlock(&data->philos[data->id].fork_l);
-	pthread_mutex_unlock(&data->philos[data->id].fork_r);
-	pthread_mutex_unlock(&data->eat);
+	pthread_mutex_lock(&philo->data->eat);
+	pthread_mutex_lock(philo->fork_r);
+	messages(philo, "has taken a fork\n");
+	pthread_mutex_lock(philo->fork_l);
+	messages(philo, "has taken a fork\n");
+	messages(philo, "is eating\n");
+	usleep(philo->data->time_eat);
+	pthread_mutex_unlock(philo->fork_l);
+	pthread_mutex_unlock(philo->fork_r);
+	pthread_mutex_unlock(&philo->data->eat);
+}
+
+void	*routine(void *data)
+{
+	t_philo	*backup;
+
+	backup = (t_philo *)data;
+	eat(backup);
+	sleep_n_think(SLEEP, backup);
+	sleep_n_think(THINK, backup);
+	return (NULL);
 }
