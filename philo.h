@@ -37,7 +37,7 @@ typedef struct s_data
 	t_philo	*philos;
 	pthread_mutex_t	time;
 	pthread_mutex_t	eat;
-	long long	prev_time;
+	long long	start_time;
 	int		id;
 	int		num_philo;
 	int		time_die;
@@ -61,7 +61,7 @@ void	eat(t_data *data);
 //	utils
 int	ft_atoi(char *str);
 void	messages(t_data *data, char *text);
-long long	set_time(t_data *data);
+long long	set_time(void);
 
 //	destroyer
 void	mutex_destroyer(t_data *data);

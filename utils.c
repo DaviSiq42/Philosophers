@@ -30,25 +30,17 @@ void	messages(t_data *data, char *text)
 	long long	time;
 
 	pthread_mutex_lock(&data->time);
-	time = set_time(data);
+	time = set_time() - data->start_time;
 	printf("%lld %d %s", time, data->philos->philo_id, text);
 	pthread_mutex_unlock(&data->time);
 }
 
-long long	set_time(t_data *data)
+long long	set_time(void)
 {
-	long long	timestamp;
 	long long	current_time;
 	struct timeval	tv;
 
 	gettimeofday(&tv, NULL);
 	current_time = (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
-	timestamp = current_time - data->prev_time;
-	if (data->prev_time == 0)
-	{
-		data->prev_time = current_time;
-		return (0);
-	}
-	data->prev_time = current_time;
-	return (timestamp);
+	return (current_time);
 }

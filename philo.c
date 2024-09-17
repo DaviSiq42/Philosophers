@@ -31,17 +31,14 @@ int	main(int argc, char **argv)
 t_data	set_struct(char **input)
 {
 	t_data	info;
-	int	id;
 
-	id = -1;
 	info.num_philo = ft_atoi(input[1]);
 	info.philos = (t_philo *)malloc(info.num_philo * sizeof(t_philo));
-/*	while (++id < info.num_philo)
-		info.philos[id].philo_id = id + 1;*/
 	info.time_die = ft_atoi(input[2]);
 	info.time_eat = ft_atoi(input[3]);
 	info.time_sleep = ft_atoi(input[4]);
 	if (input[5])
 		info.num_meals = ft_atoi(input[5]);
+	info.start_time = set_time();
 	return (info);
 }
