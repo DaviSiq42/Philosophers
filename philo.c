@@ -33,16 +33,11 @@ t_data	set_struct(char **input)
 
 	info.num_philo = ft_atoi(input[1]);
 	info.philos = (t_philo *)malloc(info.num_philo * sizeof(t_philo));
-	info.philos->fork_l = malloc((info.num_philo / 2) * sizeof(pthread_mutex_t));
-	if (info.num_philo % 2 == 0)
-		info.philos->fork_r = malloc((info.num_philo / 2) * sizeof(pthread_mutex_t));
-	else
-		info.philos->fork_r = malloc((info.num_philo / 2 + 1) * sizeof(pthread_mutex_t));
 	info.time_die = ft_atoi(input[2]);
 	info.time_eat = ft_atoi(input[3]);
 	info.time_sleep = ft_atoi(input[4]);
 	if (input[5])
-		info.num_meals = ft_atoi(input[5]);
+		info.max_meals = ft_atoi(input[5]);
 	info.start_time = set_time();
 	return (info);
 }

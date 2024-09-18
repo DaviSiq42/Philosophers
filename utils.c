@@ -29,10 +29,8 @@ void	messages(t_philo *philo, char *text)
 {
 	long long	time;
 
-	pthread_mutex_lock(&philo->data->time);
 	time = set_time() - philo->data->start_time;
 	printf("%lld %d %s", time, philo->philo_id, text);
-	pthread_mutex_unlock(&philo->data->time);
 }
 
 long long	set_time(void)
@@ -43,4 +41,22 @@ long long	set_time(void)
 	gettimeofday(&tv, NULL);
 	current_time = (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
 	return (current_time);
+}
+
+void	check_life(t_data *data)
+{
+	pthread_mutex_lock(&data->check);
+	if (set_time() - data->last_meal >= data->time_die)
+	{
+		data->status = OVER;
+		pthread_mutex_unlock(&data->check);
+		return ;
+	}
+/*	if (data->max_meals && data->num_meals >= data->max_meals)
+	{
+		data->status = OVER;
+		pthread_mutex_unlock(&data->check);
+		return ;
+	}*/
+	pthread_mutex_unlock(&data->check);
 }

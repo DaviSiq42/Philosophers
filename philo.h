@@ -24,6 +24,12 @@
 # define EAT 3
 # define FORK 4
 
+# define SUCCESS 1
+# define FAILURE 2
+
+# define OVER 1
+# define STILL 0
+
 typedef struct s_philo
 {
 	pthread_t	thread;
@@ -37,15 +43,17 @@ typedef struct s_data
 {
 	t_philo	*philos;
 	pthread_mutex_t	*fork_gen;
-	pthread_mutex_t	time;
-	pthread_mutex_t	eat;
+	pthread_mutex_t	check;
+	pthread_mutex_t	routine;
 	long long	start_time;
-	int		id;
+	long long	last_meal;
+	int		status;
+	int		num_meals;
 	int		num_philo;
 	int		time_die;
 	int		time_sleep;
 	int		time_eat;
-	int		num_meals;
+	int		max_meals;
 }		t_data;
 
 //	main
@@ -58,9 +66,10 @@ void	set_program(t_data *data);
 void	*routine(void *data);
 
 //	utils
-int	ft_atoi(char *str);
+int		ft_atoi(char *str);
 void	messages(t_philo *philo, char *text);
 long long	set_time(void);
+void	check_life(t_data *data);
 
 //	destroyer
 void	close_program(t_data *data);
