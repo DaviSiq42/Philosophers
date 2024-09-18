@@ -32,46 +32,46 @@
 
 typedef struct s_philo
 {
-	pthread_t	thread;
 	pthread_mutex_t	*fork_r;
 	pthread_mutex_t	*fork_l;
-	int		philo_id;
-	struct s_data *data;
+	pthread_t		thread;
+	int				philo_id;
+	struct s_data	*data;
 }		t_philo;
 
 typedef struct s_data
 {
-	t_philo	*philos;
+	t_philo			*philos;
 	pthread_mutex_t	*fork_gen;
 	pthread_mutex_t	check;
 	pthread_mutex_t	routine;
-	long long	start_time;
-	long long	last_meal;
-	int		status;
-	int		num_meals;
-	int		num_philo;
-	int		time_die;
-	int		time_sleep;
-	int		time_eat;
-	int		max_meals;
+	long long		start_time;
+	long long		last_meal;
+	int				status;
+	int				num_meals;
+	int				num_philo;
+	int				time_die;
+	int				time_sleep;
+	int				time_eat;
+	int				max_meals;
 }		t_data;
 
 //	main
-t_data	set_struct(char **input);
+t_data		set_struct(char **input);
 
 //	set_stuff
-void	set_program(t_data *data);
+void		set_program(t_data *data);
 
 //	routine
-void	*routine(void *data);
+void		*routine(void *data);
 
 //	utils
-int		ft_atoi(char *str);
-void	messages(t_philo *philo, char *text);
 long long	set_time(void);
-void	check_life(t_data *data);
+void		messages(t_philo *philo, char *text);
+void		check_life(t_data *data);
+int			ft_atoi(char *str);
 
 //	destroyer
-void	close_program(t_data *data);
+void		close_program(t_data *data);
 
 #endif
