@@ -22,7 +22,7 @@ static void	set_philos(t_data *data)
 		data->philos[i].philo_id = i + 1;
 		data->last_meal = set_time();
 		data->status = STILL;
-		data->num_meals = 0;
+		data->philos[i].num_meals = 0;
 		data->philos[i].fork_r = &data->fork_gen[i];
 		if (i + 1 == data->num_philo)
 			data->philos[i].fork_l = &data->fork_gen[0];

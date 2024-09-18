@@ -36,7 +36,7 @@ static void	eat(t_philo *philo)
 	usleep(philo->data->time_eat * 1000);
 	check_life(philo->data);
 	philo->data->last_meal = set_time() - philo->data->start_time;
-	philo->data->num_meals++;
+	philo->num_meals++;
 	pthread_mutex_unlock(philo->fork_l);
 	pthread_mutex_unlock(philo->fork_r);
 }
@@ -47,15 +47,15 @@ void	*routine(void *data)
 
 	backup = (t_philo *)data;
 	pthread_mutex_lock(&backup->data->routine);
-	while ((backup->data->max_meals && backup->data->num_meals >= backup->data->max_meals) || backup->data->status == STILL)
+/*	while (backup->data->max_meals > 0 && backup->num_meals >= backup->data->max_meals)*/
 	{
 		eat(backup);
 		sleep_n_think(SLEEP, backup);
 		sleep_n_think(THINK, backup);
-		check_life(backup->data);
+//		check_life(backup->data);
 	}
-	if (backup->data->status == OVER)
-		messages(backup, "died\n");
+	/*if (backup->data->status == OVER)
+		messages(backup, "died\n");*/
 	pthread_mutex_unlock(&backup->data->routine);
 	return (NULL);
 }

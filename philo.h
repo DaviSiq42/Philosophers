@@ -36,6 +36,7 @@ typedef struct s_philo
 	pthread_mutex_t	*fork_l;
 	pthread_t		thread;
 	int				philo_id;
+	int				num_meals;
 	struct s_data	*data;
 }		t_philo;
 
@@ -48,7 +49,6 @@ typedef struct s_data
 	long long		start_time;
 	long long		last_meal;
 	int				status;
-	int				num_meals;
 	int				num_philo;
 	int				time_die;
 	int				time_sleep;
