@@ -30,7 +30,10 @@ void	messages(t_philo *philo, char *text)
 	long long	time;
 
 	time = set_time() - philo->data->start_time;
-	printf("%lld %d %s", time, philo->philo_id, text);
+	if (text)
+		printf("%lld %d %s", time, philo->philo_id, text);
+	else
+		printf("%lld all philos are full\n", time);
 }
 
 long long	set_time(void)
@@ -43,20 +46,38 @@ long long	set_time(void)
 	return (current_time);
 }
 
-void	check_life(t_data *data)
+int	check_life(t_philo *philo)
 {
-	pthread_mutex_lock(&data->check);
-	if (set_time() - data->last_meal >= data->time_die)
+	pthread_mutex_lock(&philo->data->check);
+	if (set_time() - philo->last_meal >= philo->data->time_die)
 	{
-		data->status = OVER;
-		pthread_mutex_unlock(&data->check);
-		return ;
+		pthread_mutex_unlock(&philo->data->check);
+		philo->data->status = OVER;
+		messages(philo, "died\n");
+		return (philo->data->status);
 	}
-/*	if (data->max_meals && data->num_meals >= data->max_meals)
+	if (philo->data->max_meals && philo->num_meals >= philo->data->max_meals)
 	{
-		data->status = OVER;
-		pthread_mutex_unlock(&data->check);
-		return ;
-	}*/
-	pthread_mutex_unlock(&data->check);
+		if (philo->data->num_philo == philo->data->philos_full)
+		{
+			pthread_mutex_unlock(&philo->data->check);
+			philo->data->status = OVER;
+			messages(philo, NULL);
+			return (philo->data->status);
+		}
+	}
+	pthread_mutex_unlock(&philo->data->check);
+	return (STILL);
+}
+
+int	check_break(t_philo *philo)
+{
+	pthread_mutex_lock(&philo->data->check);
+	if (philo->data->status == OVER || philo->data->philos_full == philo->data->num_philo)
+	{
+		pthread_mutex_unlock(&philo->data->check);
+		return (OVER);
+	}
+	pthread_mutex_unlock(&philo->data->check);
+	return (STILL);
 }

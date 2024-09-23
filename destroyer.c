@@ -22,8 +22,8 @@ static void	mutex_destroyer(t_data *data)
 		if (&data->fork_gen[i])
 			pthread_mutex_destroy(&data->fork_gen[i]);
 	}
-	pthread_mutex_destroy(&data->routine);
 	pthread_mutex_destroy(&data->check);
+	pthread_mutex_destroy(&data->eat);
 }
 
 static void	free_all(t_data *data)

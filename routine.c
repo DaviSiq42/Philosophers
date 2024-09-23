@@ -12,8 +12,10 @@
 
 #include "philo.h"
 
-static void	sleep_n_think(int action, t_philo *philo)
+static int	sleep_n_think(int action, t_philo *philo)
 {
+	if (check_break(philo) == OVER)
+		return (OVER);
 	if (action == SLEEP)
 	{
 		messages(philo, "is sleeping\n");
@@ -22,23 +24,32 @@ static void	sleep_n_think(int action, t_philo *philo)
 	if (action == THINK)
 	{
 		messages(philo, "is thinking\n");
-		usleep(100);//need to check time philos can stay thinking without dying
+		usleep(philo->data->time_eat * 2 - philo->data->time_sleep);
 	}
+	return (STILL);
 }
 
-static void	eat(t_philo *philo)
+int	eat(t_philo *philo)
 {
+	if (check_break(philo) == OVER)
+		return (OVER);
 	pthread_mutex_lock(philo->fork_r);
 	messages(philo, "has taken a fork\n");
 	pthread_mutex_lock(philo->fork_l);
 	messages(philo, "has taken a fork\n");
+	if (check_break(philo) == OVER)
+		return (OVER);
+	pthread_mutex_lock(&philo->data->eat);
 	messages(philo, "is eating\n");
-	usleep(philo->data->time_eat * 1000);
-	check_life(philo->data);
-	philo->data->last_meal = set_time() - philo->data->start_time;
+	philo->last_meal = set_time();
 	philo->num_meals++;
+	if (philo->num_meals == philo->data->max_meals)
+		philo->data->philos_full++;
+	pthread_mutex_unlock(&philo->data->eat);
+	usleep(philo->data->time_eat * 1000);
 	pthread_mutex_unlock(philo->fork_l);
 	pthread_mutex_unlock(philo->fork_r);
+	return (STILL);
 }
 
 void	*routine(void *data)
@@ -46,16 +57,14 @@ void	*routine(void *data)
 	t_philo	*backup;
 
 	backup = (t_philo *)data;
-	pthread_mutex_lock(&backup->data->routine);
-/*	while (backup->data->max_meals > 0 && backup->num_meals >= backup->data->max_meals)*/
+	while (1)
 	{
-		eat(backup);
-		sleep_n_think(SLEEP, backup);
-		sleep_n_think(THINK, backup);
-//		check_life(backup->data);
+		if (eat(backup) == OVER)
+			break ;
+		if (sleep_n_think(SLEEP, backup) == OVER)
+			break ;
+		if (sleep_n_think(THINK, backup) == OVER)
+			break ;
 	}
-	/*if (backup->data->status == OVER)
-		messages(backup, "died\n");*/
-	pthread_mutex_unlock(&backup->data->routine);
 	return (NULL);
 }

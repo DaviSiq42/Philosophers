@@ -12,6 +12,24 @@
 
 #include "philo.h"
 
+static void	monitor(t_data *data)
+{
+	int	i;
+	int	finish;
+
+	finish = STILL;
+	while (finish == STILL)
+	{
+		i = -1;
+		while (++i < data->num_philo)
+		{
+			if (finish == STILL && check_life(&data->philos[i]) == OVER)
+				finish = OVER;
+		}
+		usleep(80);
+	}
+}
+
 static void	set_philos(t_data *data)
 {
 	int	i;
@@ -20,7 +38,7 @@ static void	set_philos(t_data *data)
 	while (++i < data->num_philo)
 	{
 		data->philos[i].philo_id = i + 1;
-		data->last_meal = set_time();
+		data->philos[i].last_meal = set_time();
 		data->status = STILL;
 		data->philos[i].num_meals = 0;
 		data->philos[i].fork_r = &data->fork_gen[i];
@@ -39,6 +57,7 @@ static void	set_philos(t_data *data)
 			return ;
 		}
 	}
+	monitor(data);
 	i = -1;
 	while (++i < data->num_philo)
 		pthread_join(data->philos[i].thread, NULL);
@@ -68,7 +87,7 @@ static void	set_mutex(t_data *data)
 		close_program(data);
 		return ;
 	}
-	if (pthread_mutex_init(&data->routine, NULL) != 0)
+	if (pthread_mutex_init(&data->eat, NULL) != 0)
 	{
 		close_program(data);
 		return ;
