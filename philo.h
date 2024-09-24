@@ -59,6 +59,7 @@ typedef struct s_data
 
 //	main
 t_data		set_struct(char **input);
+int			check_arg(char **argv);
 
 //	set_stuff
 void		set_program(t_data *data);
@@ -69,7 +70,7 @@ void		*routine(void *data);
 //	utils
 long long	set_time(void);
 void		messages(t_philo *philo, char *text);
-int		check_life(t_philo *philo);
+int			check_life(t_philo *philo);
 int			ft_atoi(char *str);
 int			check_break(t_philo *philo);
 

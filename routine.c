@@ -69,11 +69,6 @@ int	eat(t_philo *philo)
 	if (check_break(philo) == OVER)
 		return (OVER);
 	eat_aux(philo);
-/*	pthread_mutex_lock(philo->fork_r);
-	messages(philo, "has taken a fork\n");
-	pthread_mutex_lock(philo->fork_l);
-	messages(philo, "has taken a fork\n");
-	pthread_mutex_lock(&philo->data->eat);*/
 	if (check_break(philo) == OVER)
 		return (OVER);
 	messages(philo, "is eating\n");

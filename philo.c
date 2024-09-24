@@ -18,9 +18,11 @@ int	main(int argc, char **argv)
 
 	if (argc < 5)
 	{
-		printf("Not enough arguments. Try: ./philo <num_philo> <time_die> <time_eat> <time_sleep> [num_meals] (optional)");
+		printf("Not enough arguments. 5 or 6 arguments required.");
 		return (0);
 	}
+	if (check_arg(argv))
+		return (0);
 	data = set_struct(argv);
 	set_program(&data);
 	close_program(&data);
@@ -44,4 +46,28 @@ t_data	set_struct(char **input)
 	info.status = STILL;
 	info.philos_full = 0;
 	return (info);
+}
+
+int	check_arg(char **argv)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	j = 1;
+	while (argv[j])
+	{
+		i = 0;
+		while (argv[j][i])
+		{
+			if (argv[j][i] < '0' || argv[j][i] > '9' || argv[j][0] == '0')
+			{
+				printf("Wrong input");
+				return (1);
+			}
+			i++;
+		}
+		j++;
+	}
+	return (0);
 }

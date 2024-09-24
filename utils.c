@@ -33,14 +33,14 @@ void	messages(t_philo *philo, char *text)
 	pthread_mutex_lock(&philo->data->check);
 	if (text && philo->data->status == STILL)
 		printf("%lld %d %s", time, philo->philo_id, text);
-	else if (text == NULL)
-		printf("%lld all philos are full\n", time);
 	pthread_mutex_unlock(&philo->data->check);
+	if (text == NULL)
+		printf("%lld all philos are full\n", time);
 }
 
 long long	set_time(void)
 {
-	long long	current_time;
+	long long		current_time;
 	struct timeval	tv;
 
 	gettimeofday(&tv, NULL);
@@ -60,7 +60,8 @@ int	check_life(t_philo *philo)
 		pthread_mutex_unlock(&philo->data->eat);
 		return (philo->data->status);
 	}
-	if (philo->data->max_meals > 0 && philo->num_meals >= philo->data->max_meals)
+	if (philo->data->max_meals > 0
+		&& philo->num_meals >= philo->data->max_meals)
 	{
 		if (philo->data->num_philo == philo->data->philos_full)
 		{

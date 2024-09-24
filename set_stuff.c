@@ -30,7 +30,7 @@ static void	monitor(t_data *data)
 	}
 }
 
-static void	set_philos(t_data *data)
+int	set_philos(t_data *data)
 {
 	int	i;
 
@@ -46,51 +46,41 @@ static void	set_philos(t_data *data)
 		else
 			data->philos[i].fork_l = &data->fork_gen[i + 1];
 		data->philos[i].data = data;
-		if (pthread_create(&data->philos[i].thread, NULL, routine, (void *)&data->philos[i]) != 0)
-		{
-			close_program(data);
-			return ;
-		}
+		if (pthread_create(&data->philos[i].thread, NULL,
+				routine, (void *)&data->philos[i]) != 0)
+			return (1);
 	}
 	monitor(data);
 	i = -1;
 	while (++i < data->num_philo)
 		pthread_join(data->philos[i].thread, NULL);
+	return (0);
 }
 
-static void	set_mutex(t_data *data)
+int	set_mutex(t_data *data)
 {
 	int	i;
 
 	i = -1;
 	data->fork_gen = malloc(data->num_philo * sizeof(pthread_mutex_t));
 	if (!data->fork_gen)
-	{
-		close_program(data);
-		return ;
-	}
+		return (1);
 	while (++i < data->num_philo)
 	{
 		if (pthread_mutex_init(&data->fork_gen[i], NULL) != 0)
-		{
-			close_program(data);
-			return ;
-		}
+			return (1);
 	}
 	if (pthread_mutex_init(&data->check, NULL) != 0)
-	{
-		close_program(data);
-		return ;
-	}
+		return (1);
 	if (pthread_mutex_init(&data->eat, NULL) != 0)
-	{
-		close_program(data);
-		return ;
-	}
+		return (1);
+	return (0);
 }
 
 void	set_program(t_data *data)
 {
-	set_mutex(data);
-	set_philos(data);
+	if (set_mutex(data))
+		return ;
+	if (set_philos(data))
+		return ;
 }
