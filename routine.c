@@ -12,7 +12,24 @@
 
 #include "philo.h"
 
-static int	sleep_n_think(int action, t_philo *philo)
+int	think_aux(t_philo *philo)
+{
+	int	time_think;
+
+	time_think = 0;
+	if (philo->data->num_philo % 2 == 0)
+	{
+		if (philo->data->time_sleep < philo->data->time_eat)
+			time_think = philo->data->time_eat - philo->data->time_sleep;
+		else
+			time_think = 0;
+	}
+	else
+		time_think = philo->data->time_eat * 2 - philo->data->time_sleep;
+	return (time_think);
+}
+
+int	sleep_n_think(int action, t_philo *philo)
 {
 	if (check_break(philo) == OVER)
 		return (OVER);
@@ -24,22 +41,41 @@ static int	sleep_n_think(int action, t_philo *philo)
 	if (action == THINK)
 	{
 		messages(philo, "is thinking\n");
-		usleep(philo->data->time_eat * 2 - philo->data->time_sleep);
+		usleep(think_aux(philo));
 	}
 	return (STILL);
+}
+
+static void	eat_aux(t_philo *philo)
+{
+	if (philo->philo_id % 2 == 0)
+	{
+		pthread_mutex_lock(philo->fork_r);
+		messages(philo, "has taken a fork\n");
+		pthread_mutex_lock(philo->fork_l);
+		messages(philo, "has taken a fork\n");
+	}
+	else
+	{
+		pthread_mutex_lock(philo->fork_l);
+		messages(philo, "has taken a fork\n");
+		pthread_mutex_lock(philo->fork_r);
+		messages(philo, "has taken a fork\n");
+	}
 }
 
 int	eat(t_philo *philo)
 {
 	if (check_break(philo) == OVER)
 		return (OVER);
-	pthread_mutex_lock(philo->fork_r);
+	eat_aux(philo);
+/*	pthread_mutex_lock(philo->fork_r);
 	messages(philo, "has taken a fork\n");
 	pthread_mutex_lock(philo->fork_l);
 	messages(philo, "has taken a fork\n");
+	pthread_mutex_lock(&philo->data->eat);*/
 	if (check_break(philo) == OVER)
 		return (OVER);
-	pthread_mutex_lock(&philo->data->eat);
 	messages(philo, "is eating\n");
 	philo->last_meal = set_time();
 	philo->num_meals++;
@@ -59,6 +95,13 @@ void	*routine(void *data)
 	backup = (t_philo *)data;
 	while (1)
 	{
+		if (backup->data->num_philo == 1)
+		{
+			messages(backup, "has taken a fork\n");
+			break ;
+		}
+		if (backup->philo_id % 2 == 0)
+			usleep(1000);
 		if (eat(backup) == OVER)
 			break ;
 		if (sleep_n_think(SLEEP, backup) == OVER)

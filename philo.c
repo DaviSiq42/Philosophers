@@ -38,6 +38,10 @@ t_data	set_struct(char **input)
 	info.time_sleep = ft_atoi(input[4]);
 	if (input[5])
 		info.max_meals = ft_atoi(input[5]);
+	else
+		info.max_meals = -1;
 	info.start_time = set_time();
+	info.status = STILL;
+	info.philos_full = 0;
 	return (info);
 }

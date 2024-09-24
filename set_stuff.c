@@ -39,7 +39,6 @@ static void	set_philos(t_data *data)
 	{
 		data->philos[i].philo_id = i + 1;
 		data->philos[i].last_meal = set_time();
-		data->status = STILL;
 		data->philos[i].num_meals = 0;
 		data->philos[i].fork_r = &data->fork_gen[i];
 		if (i + 1 == data->num_philo)
@@ -47,10 +46,6 @@ static void	set_philos(t_data *data)
 		else
 			data->philos[i].fork_l = &data->fork_gen[i + 1];
 		data->philos[i].data = data;
-	}
-	i = -1;
-	while (++i < data->num_philo)
-	{
 		if (pthread_create(&data->philos[i].thread, NULL, routine, (void *)&data->philos[i]) != 0)
 		{
 			close_program(data);
