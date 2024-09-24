@@ -33,11 +33,13 @@ int	sleep_n_think(int action, t_philo *philo)
 {
 	if (check_break(philo) == OVER)
 		return (OVER);
+	pthread_mutex_lock(&philo->data->eat);
 	if (action == SLEEP)
 	{
 		messages(philo, "is sleeping\n");
 		usleep(philo->data->time_sleep * 1000);
 	}
+	pthread_mutex_unlock(&philo->data->eat);
 	if (action == THINK)
 	{
 		messages(philo, "is thinking\n");
@@ -69,9 +71,8 @@ int	eat(t_philo *philo)
 	if (check_break(philo) == OVER)
 		return (OVER);
 	eat_aux(philo);
-	if (check_break(philo) == OVER)
-		return (OVER);
 	messages(philo, "is eating\n");
+	pthread_mutex_lock(&philo->data->eat);
 	philo->last_meal = set_time();
 	philo->num_meals++;
 	if (philo->num_meals == philo->data->max_meals)
@@ -96,7 +97,7 @@ void	*routine(void *data)
 			break ;
 		}
 		if (backup->philo_id % 2 == 0)
-			usleep(1000);
+			usleep(5000);
 		if (eat(backup) == OVER)
 			break ;
 		if (sleep_n_think(SLEEP, backup) == OVER)

@@ -76,5 +76,6 @@ int			check_break(t_philo *philo);
 
 //	destroyer
 void		close_program(t_data *data);
+void		join_threads(t_data *data);
 
 #endif

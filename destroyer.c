@@ -32,6 +32,15 @@ static void	free_all(t_data *data)
 	free(data->philos);
 }
 
+void	join_threads(t_data *data)
+{
+	int	i;
+
+	i = -1;
+	while (++i < data->num_philo)
+		pthread_join(data->philos[i].thread, NULL);
+}
+
 void	close_program(t_data *data)
 {
 	mutex_destroyer(data);

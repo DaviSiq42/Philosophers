@@ -26,8 +26,8 @@ static void	monitor(t_data *data)
 			if (finish == STILL && check_life(&data->philos[i]) == OVER)
 				finish = OVER;
 		}
-		usleep(80);
 	}
+	join_threads(data);
 }
 
 int	set_philos(t_data *data)
@@ -51,9 +51,6 @@ int	set_philos(t_data *data)
 			return (1);
 	}
 	monitor(data);
-	i = -1;
-	while (++i < data->num_philo)
-		pthread_join(data->philos[i].thread, NULL);
 	return (0);
 }
 
