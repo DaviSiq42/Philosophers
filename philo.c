@@ -25,7 +25,7 @@ int	main(int argc, char **argv)
 		return (0);
 	data = set_struct(argv);
 	set_program(&data);
-	close_program(&data);
+	monitor(&data);
 	return (0);
 }
 

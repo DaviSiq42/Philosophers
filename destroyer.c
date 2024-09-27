@@ -24,6 +24,9 @@ static void	mutex_destroyer(t_data *data)
 	}
 	pthread_mutex_destroy(&data->check);
 	pthread_mutex_destroy(&data->eat);
+	pthread_mutex_destroy(&data->routine);
+	pthread_mutex_destroy(&data->monitor);
+	pthread_mutex_destroy(&data->end);
 }
 
 static void	free_all(t_data *data)
@@ -43,6 +46,7 @@ void	join_threads(t_data *data)
 
 void	close_program(t_data *data)
 {
+	join_threads(data);
 	mutex_destroyer(data);
 	free_all(data);
 }

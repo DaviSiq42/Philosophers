@@ -50,14 +50,14 @@ long long	set_time(void)
 
 int	check_life(t_philo *philo)
 {
+	pthread_mutex_lock(&philo->data->end);
 	pthread_mutex_lock(&philo->data->check);
 	if (set_time() - philo->last_meal >= philo->data->time_die)
 	{
 		pthread_mutex_unlock(&philo->data->check);
 		messages(philo, "died\n");
-		pthread_mutex_lock(&philo->data->eat);
 		philo->data->status = OVER;
-		pthread_mutex_unlock(&philo->data->eat);
+		pthread_mutex_unlock(&philo->data->end);
 		return (philo->data->status);
 	}
 	if (philo->data->max_meals > 0
@@ -68,21 +68,23 @@ int	check_life(t_philo *philo)
 			pthread_mutex_unlock(&philo->data->check);
 			philo->data->status = OVER;
 			messages(philo, NULL);
+			pthread_mutex_unlock(&philo->data->end);
 			return (philo->data->status);
 		}
 	}
 	pthread_mutex_unlock(&philo->data->check);
+	pthread_mutex_unlock(&philo->data->end);
 	return (STILL);
 }
 
 int	check_break(t_philo *philo)
 {
-	pthread_mutex_lock(&philo->data->check);
+	pthread_mutex_lock(&philo->data->monitor);
 	if (philo->data->status == OVER)
 	{
-		pthread_mutex_unlock(&philo->data->check);
+		pthread_mutex_unlock(&philo->data->monitor);
 		return (OVER);
 	}
-	pthread_mutex_unlock(&philo->data->check);
+	pthread_mutex_unlock(&philo->data->monitor);
 	return (STILL);
 }

@@ -46,6 +46,8 @@ typedef struct s_data
 	pthread_mutex_t	*fork_gen;
 	pthread_mutex_t	check;
 	pthread_mutex_t	routine;
+	pthread_mutex_t	monitor;
+	pthread_mutex_t	end;
 	pthread_mutex_t	eat;
 	long long		start_time;
 	int				status;
@@ -63,6 +65,7 @@ int			check_arg(char **argv);
 
 //	set_stuff
 void		set_program(t_data *data);
+void		monitor(t_data *data);
 
 //	routine
 void		*routine(void *data);

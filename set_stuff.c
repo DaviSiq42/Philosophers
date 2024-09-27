@@ -12,7 +12,7 @@
 
 #include "philo.h"
 
-static void	monitor(t_data *data)
+void	monitor(t_data *data)
 {
 	int	i;
 	int	finish;
@@ -26,8 +26,9 @@ static void	monitor(t_data *data)
 			if (finish == STILL && check_life(&data->philos[i]) == OVER)
 				finish = OVER;
 		}
+		usleep(50);
 	}
-	join_threads(data);
+	close_program(data);
 }
 
 int	set_philos(t_data *data)
@@ -50,7 +51,7 @@ int	set_philos(t_data *data)
 				routine, (void *)&data->philos[i]) != 0)
 			return (1);
 	}
-	monitor(data);
+//	monitor(data);
 	return (0);
 }
 
@@ -70,6 +71,12 @@ int	set_mutex(t_data *data)
 	if (pthread_mutex_init(&data->check, NULL) != 0)
 		return (1);
 	if (pthread_mutex_init(&data->eat, NULL) != 0)
+		return (1);
+	if (pthread_mutex_init(&data->monitor, NULL) != 0)
+		return (1);
+	if (pthread_mutex_init(&data->end, NULL) != 0)
+		return (1);
+	if (pthread_mutex_init(&data->routine, NULL) != 0)
 		return (1);
 	return (0);
 }
